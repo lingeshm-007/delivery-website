@@ -15,6 +15,7 @@ import {
   Clock,
   History,
   Send,
+  MapPin,
   ArrowRight,
   AlertCircle,
 } from 'lucide-react';
@@ -364,6 +365,16 @@ export const Deliveries: React.FC<DeliveriesProps> = ({
                             <XCircle className="w-4 h-4" />
                           </button>
                         )}
+
+                        {/* Amazon Style Tracking View */}
+                        <button
+                          onClick={() => onNavigate('tracking', del.delivery_id)}
+                          className="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold rounded border border-amber-200 transition-colors flex items-center gap-1 text-[11px]"
+                          title="Track package journey Amazon style"
+                        >
+                          <MapPin className="w-3 h-3 text-amber-600" />
+                          <span>Track</span>
+                        </button>
 
                         {/* Audit History */}
                         <button

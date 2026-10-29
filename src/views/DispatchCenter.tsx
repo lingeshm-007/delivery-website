@@ -42,6 +42,7 @@ export const DispatchCenter: React.FC<DispatchCenterProps> = ({
 
   // Dispatch execution state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
   const [lastSuccess, setLastSuccess] = useState<string | null>(null);
 
@@ -58,17 +59,46 @@ export const DispatchCenter: React.FC<DispatchCenterProps> = ({
       setVehicles(vehRes);
       setDrivers(drvRes);
 
-      // Auto-select initial delivery if passed
+      // Re-sync or auto-select delivery
       if (initialDeliveryId) {
         const found = delRes.find((d) => d.delivery_id === initialDeliveryId);
         if (found) setSelectedDelivery(found);
-      } else if (delRes.length > 0 && !selectedDelivery) {
+      } else if (selectedDelivery) {
+        const stillPending = delRes.find((d) => d.delivery_id === selectedDelivery.delivery_id);
+        if (stillPending) {
+          setSelectedDelivery(stillPending);
+        } else {
+          setSelectedDelivery(delRes.length > 0 ? delRes[0] : null);
+          setSelectedVehicle(null);
+          setSelectedDriver(null);
+        }
+      } else if (delRes.length > 0) {
         setSelectedDelivery(delRes[0]);
+      } else {
+        setSelectedDelivery(null);
       }
     } catch (err: any) {
       setLastError(`Failed to load dispatch data: ${err.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRefreshState = async () => {
+    setIsRefreshing(true);
+    setLastError(null);
+    setLastSuccess(null);
+    try {
+      await Promise.all([
+        fetchData(),
+        onAssignmentComplete?.(),
+      ]);
+      onNotification('Dispatch workbench and live resource state refreshed', 'success');
+    } catch (err: any) {
+      setLastError(`Refresh failed: ${err.message}`);
+      onNotification(`Failed to refresh dispatch state: ${err.message}`, 'error');
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 500);
     }
   };
 
@@ -151,12 +181,12 @@ export const DispatchCenter: React.FC<DispatchCenterProps> = ({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={fetchData}
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors"
+            onClick={handleRefreshState}
+            disabled={isRefreshing || loading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors shadow-2xs disabled:opacity-60"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh State</span>
+            <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>{isRefreshing ? 'Refreshing...' : 'Refresh State'}</span>
           </button>
         </div>
       </div>

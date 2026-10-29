@@ -7,6 +7,7 @@ import {
   Truck,
   Users,
   History,
+  MapPin,
   Layers,
   LogOut,
 } from 'lucide-react';
@@ -71,6 +72,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Assignment History',
       icon: History,
       badge: null,
+    },
+    {
+      id: 'tracking' as ViewMode,
+      label: 'Track Package',
+      icon: MapPin,
+      badge: 'Live',
+      badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-medium',
     },
   ];
 

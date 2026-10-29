@@ -9,6 +9,7 @@ import { Deliveries } from './views/Deliveries';
 import { Vehicles } from './views/Vehicles';
 import { Drivers } from './views/Drivers';
 import { AssignmentHistory } from './views/AssignmentHistory';
+import { OrderTracking } from './views/OrderTracking';
 import { AuthView } from './components/AuthView';
 import { CheckCircle2, AlertCircle, X } from 'lucide-react';
 
@@ -192,6 +193,14 @@ export function App() {
             )}
 
             {currentView === 'history' && <AssignmentHistory />}
+
+            {currentView === 'tracking' && (
+              <OrderTracking
+                initialDeliveryId={dispatchPreselectId}
+                onNavigate={handleNavigate}
+                onNotification={showNotification}
+              />
+            )}
           </div>
         </main>
       </div>

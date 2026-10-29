@@ -129,4 +129,5 @@ export type ViewMode =
   | 'deliveries'
   | 'vehicles'
   | 'drivers'
-  | 'history';
+  | 'history'
+  | 'tracking';

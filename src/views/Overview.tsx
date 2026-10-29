@@ -15,6 +15,7 @@ import {
   Radio,
   FileText,
   Activity,
+  MapPin,
 } from 'lucide-react';
 
 interface OverviewProps {
@@ -239,13 +240,24 @@ export const Overview: React.FC<OverviewProps> = ({ metrics, loading, onNavigate
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => onNavigate('dispatch', del.delivery_id)}
-                      className="shrink-0 px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-semibold rounded-lg border border-teal-200 transition-colors flex items-center gap-1"
-                    >
-                      <span>Assign</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => onNavigate('tracking', del.delivery_id)}
+                        className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold rounded-lg border border-amber-200 transition-colors flex items-center gap-1"
+                        title="Track package live"
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                        <span>Track</span>
+                      </button>
+
+                      <button
+                        onClick={() => onNavigate('dispatch', del.delivery_id)}
+                        className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-semibold rounded-lg border border-teal-200 transition-colors flex items-center gap-1"
+                      >
+                        <span>Assign</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
