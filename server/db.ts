@@ -2,6 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { hashPassword } from './auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,7 +111,16 @@ export function initSchema(db: DatabaseSync) {
 export function seedDbIfEmpty(db: DatabaseSync) {
   const vehicleCountRow = db.prepare('SELECT COUNT(*) as count FROM vehicles').get() as { count: number };
   if (vehicleCountRow.count > 0) {
-    return; // Already populated
+    // Ensure demo users exist
+    try {
+      const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
+      const user = db.prepare('SELECT user_id FROM users WHERE user_id = ?').get('admin');
+      if (!user) {
+        db.prepare('INSERT OR REPLACE INTO users (user_id, name, email, password_hash, auth_provider, avatar_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+          .run('admin', 'Fleet Administrator', 'admin@fleetwise.io', hashPassword('password123'), 'local', null, now);
+      }
+    } catch (e) {}
+    return;
   }
   populateDemoData(db);
 }
@@ -301,13 +311,11 @@ function populateDemoData(db: DatabaseSync) {
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
   // Default password: password123 (salt:hash)
-  const defaultSalt = 'fleetwise_demo_salt';
-  const defaultHash = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'; // sha256('password123' + salt)
   insertUser.run(
     'admin',
     'Fleet Administrator',
     'admin@fleetwise.io',
-    `${defaultSalt}:${defaultHash}`,
+    hashPassword('password123'),
     'local',
     null,
     formatTime(now)
@@ -316,7 +324,7 @@ function populateDemoData(db: DatabaseSync) {
     'dispatcher',
     'Operations Dispatcher',
     'dispatcher@fleetwise.io',
-    `${defaultSalt}:${defaultHash}`,
+    hashPassword('password123'),
     'local',
     null,
     formatTime(now)
