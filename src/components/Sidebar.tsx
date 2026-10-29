@@ -184,20 +184,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
       )}
-
-      {/* Footer Info Box */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/40 text-xs text-slate-400">
-        <div className="flex items-center justify-between">
-          <span className="flex items-center gap-1.5 font-medium text-slate-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            Atomic Engine
-          </span>
-          <span className="font-mono text-[10px] text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-800/40">
-            SQLite WAL
-          </span>
-        </div>
-        <p className="text-[11px] text-slate-500 mt-1">Double-booking prevention active</p>
-      </div>
     </aside>
   );
 };
