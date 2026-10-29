@@ -9,7 +9,6 @@ import {
   History,
   MapPin,
   Layers,
-  LogOut,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -28,8 +27,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   pendingCount = 0,
   availableVehicles = 0,
   availableDrivers = 0,
-  currentUser,
-  onLogout,
 }) => {
   const navItems = [
     {
@@ -151,47 +148,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           );
         })}
       </nav>
-
-      {/* User Session Profile */}
-      {currentUser && (
-        <div className="p-3 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between gap-2.5">
-          <div className="flex items-center gap-2.5 min-w-0">
-            {currentUser.avatar_url ? (
-              <img
-                src={currentUser.avatar_url}
-                alt={currentUser.name}
-                className="w-8 h-8 rounded-full object-cover border border-slate-700 shrink-0"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-teal-600/30 border border-teal-500/40 text-teal-300 flex items-center justify-center font-bold text-xs uppercase shrink-0">
-                {currentUser.name.slice(0, 2)}
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold text-white truncate flex items-center gap-1">
-                <span className="truncate">{currentUser.name}</span>
-              </div>
-              <div className="text-[10px] text-slate-400 font-mono truncate flex items-center gap-1">
-                <span>@{currentUser.user_id}</span>
-                {currentUser.auth_provider === 'google' && (
-                  <span className="text-[9px] bg-red-950/80 text-red-300 border border-red-800/40 px-1 rounded">
-                    Google
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-          {onLogout && (
-            <button
-              onClick={onLogout}
-              title="Sign Out"
-              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors shrink-0"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      )}
     </aside>
   );
 };

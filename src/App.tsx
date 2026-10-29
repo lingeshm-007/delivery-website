@@ -131,8 +131,6 @@ export function App() {
         pendingCount={metrics?.pending_deliveries}
         availableVehicles={metrics?.available_vehicles}
         availableDrivers={metrics?.available_drivers}
-        currentUser={currentUser}
-        onLogout={handleLogout}
       />
 
       {/* Main Execution Area */}
