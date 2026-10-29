@@ -20,8 +20,9 @@ export function createApp() {
   const db = getDb();
   seedDbIfEmpty(db);
 
-  // Mount API router
+  // Mount API router (both /api and root so Vercel rewrites work seamlessly)
   app.use('/api', apiRouter);
+  app.use(apiRouter);
 
   // Serve static assets if built dist exists
   const distPath = path.resolve(__dirname, '../dist');

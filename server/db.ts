@@ -6,7 +6,16 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DB_PATH = process.env.FLEETWISE_DB_PATH || path.resolve(__dirname, 'fleetwise.db');
+const isVercel = Boolean(process.env.VERCEL);
+let resolvedDbPath = process.env.FLEETWISE_DB_PATH;
+if (!resolvedDbPath) {
+  if (isVercel) {
+    resolvedDbPath = path.join('/tmp', 'fleetwise.db');
+  } else {
+    resolvedDbPath = path.resolve(__dirname, 'fleetwise.db');
+  }
+}
+const DB_PATH = resolvedDbPath;
 
 let dbInstance: DatabaseSync | null = null;
 
